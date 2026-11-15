@@ -375,13 +375,20 @@ var RAW=[
 ["g63", "mo", "Alongamento de peitoral e ombros", "Braços atrás do corpo ou apoiados em um batente.", "3 x 30s", "15s", 4, "Mantenha os ombros relaxados."],
 ["g64", "mo", "Mobilidade de quadril (90/90)", "Sentado no chão, alterne a rotação dos quadris.", "2 x 10", "0s", 4, "Movimento lento e controlado."],
 ["g65", "mo", "Liberação com foam roller", "Role lentamente sobre a musculatura trabalhada.", "5 min", "0s", 5, "Pare nos pontos mais sensíveis por 20 a 30 segundos."],
-["g66", "mo", "Alongamento de quadríceps e panturrilha", "Alongue as pernas após o treino.", "3 x 30s", "15s", 4, "Mantenha o quadril alinhado e respire."]
+["g66", "mo", "Alongamento de quadríceps e panturrilha", "Alongue as pernas após o treino.", "3 x 30s", "15s", 4, "Mantenha o quadril alinhado e respire."],
+["g67", "pn", "Kickback de glúteo na polia", "Com a tornozeleira na polia baixa, estenda o quadril levando a perna para trás.", "3 x 12-15 por perna", "45s", 6, "Tronco estável e movimento no quadril, sem arquear a lombar."],
+["g68", "pn", "Agachamento sumô", "Pés bem afastados e pontas dos pés para fora, desça com o tronco ereto.", "3 x 12-15", "75s", 7, "Joelhos acompanham a direção dos pés e o quadril desce entre as pernas."],
+["g69", "pn", "Ponte de glúteos (no solo)", "Deitado, suba o quadril contraindo o glúteo.", "3 x 15-20", "45s", 5, "Empurre pelos calcanhares e pause 1 segundo no topo."],
+["g70", "pn", "Abdução de quadril com elástico", "Com o elástico acima dos joelhos, abra as pernas contra a resistência.", "3 x 15-20", "45s", 5, "Mantenha o quadril estável, sem girar o tronco."],
+["g71", "pn", "Caminhada lateral com mini band", "Elástico acima dos joelhos, passos laterais em semiagachamento.", "3 x 15 passos por lado", "45s", 5, "Joelhos para fora e passos curtos e controlados."]
 ];
 function toEx(a){return {id:a[0],cat:a[1],name:a[2],desc:a[3],dose:a[4],rest:a[5],min:a[6],tip:a[7]};}
 var BUILTIN=RAW.map(toEx);
 
 var DEF_TITLES={"seg": "Peito e tríceps", "ter": "Costas e bíceps", "qua": "Pernas e glúteos", "qui": "Ombros e abdômen", "sex": "Corpo todo", "sab": "Cardio e mobilidade", "dom": "Descanso"};
 var DEF_PLAN={"seg": ["g61", "g01", "g02", "g04", "g05", "g42", "g43"], "ter": ["g61", "g10", "g11", "g12", "g13", "g38", "g40"], "qua": ["g61", "g18", "g19", "g21", "g25", "g23", "g26"], "qui": ["g61", "g31", "g32", "g34", "g35", "g47", "g48"], "sex": ["g61", "g19", "g08", "g10", "g31", "g38", "g42", "g47"], "sab": ["g55", "g62", "g65"], "dom": []};
+var DEF_TITLES_F={"seg": "Glúteos e posteriores", "ter": "Costas e ombros", "qua": "Pernas completas", "qui": "Peito e braços", "sex": "Glúteos e abdômen", "sab": "Cardio e mobilidade", "dom": "Descanso"};
+var DEF_PLAN_F={"seg": ["g61", "g25", "g22", "g24", "g21", "g27"], "ter": ["g61", "g10", "g12", "g13", "g31", "g32", "g34"], "qua": ["g61", "g18", "g19", "g20", "g29", "g28", "g26"], "qui": ["g61", "g08", "g02", "g04", "g38", "g42", "g47"], "sex": ["g61", "g25", "g68", "g71", "g47", "g48", "g52"], "sab": ["g55", "g62", "g65"], "dom": []};
 var TEMPLATES=[
  {n:"Peito e tríceps",d:"Foco em peitoral com finalização de tríceps.",ids:["g61", "g01", "g02", "g04", "g05", "g42", "g43"]},
  {n:"Costas e bíceps",d:"Dorsais, remadas e rosca.",ids:["g61", "g10", "g11", "g12", "g13", "g38", "g39"]},
@@ -390,7 +397,9 @@ var TEMPLATES=[
  {n:"Ombros e abdômen",d:"Deltoides e core.",ids:["g61", "g31", "g32", "g34", "g47", "g48", "g52"]},
  {n:"Full body iniciante",d:"Corpo inteiro em um só treino.",ids:["g61", "g19", "g08", "g10", "g31", "g38", "g42", "g47"]},
  {n:"Superiores (upper)",d:"Peito, costas, ombros e braços.",ids:["g61", "g01", "g11", "g31", "g10", "g38", "g42"]},
- {n:"Cardio e core",d:"Condicionamento e abdômen.",ids:["g55", "g47", "g48", "g51", "g62"]}
+ {n:"Cardio e core",d:"Condicionamento e abdômen.",ids:["g55", "g47", "g48", "g51", "g62"]},
+ {n:"Glúteos e core",d:"Foco em glúteos com abdômen.",ids:["g61", "g25", "g68", "g71", "g47", "g48", "g52"]},
+ {n:"Superiores leve",d:"Costas, ombros e braços com cargas moderadas.",ids:["g61", "g10", "g12", "g31", "g32", "g39", "g42"]}
 ];
 
 /* ---------- estado ---------- */
@@ -402,12 +411,13 @@ function mkItem(e,id){return {id:id||uid(),ex:e.id,cat:e.cat,name:e.name,desc:e.
 function getBuiltin(id){return BUILTIN.filter(function(e){return e.id===id})[0];}
 function allEx(){return BUILTIN.concat(plan.custom);}
 function getEx(id){return allEx().filter(function(e){return e.id===id})[0];}
-function defaultPlan(){
-  var days={};DAYS.forEach(function(d){days[d.k]=DEF_PLAN[d.k].map(function(id){return mkItem(getBuiltin(id),'d-'+d.k+'-'+id)})});
-  return {v:2,updatedAt:0,weekId:'w0',custom:[],days:days,titles:clone(DEF_TITLES)};
+function defaultPlan(sx){
+  var P=sx==='f'?DEF_PLAN_F:DEF_PLAN,T=sx==='f'?DEF_TITLES_F:DEF_TITLES,days={};
+  DAYS.forEach(function(d){days[d.k]=(P[d.k]||[]).map(function(id){return mkItem(getBuiltin(id),'d-'+d.k+'-'+id)})});
+  return {v:2,updatedAt:0,weekId:'w0',custom:[],days:days,titles:clone(T)};
 }
-function normPlan(s){
-  var d=defaultPlan();if(!s||typeof s!=='object')return d;
+function normPlan(s,sx){
+  var d=defaultPlan(sx);if(!s||typeof s!=='object')return d;
   s.custom=Array.isArray(s.custom)?s.custom:[];s.days=s.days||{};s.titles=s.titles||{};
   if(s.days.a&&!s.days.seg){var lg={a:'seg',b:'qua',c:'sex',d:'qui',e:'ter'};Object.keys(lg).forEach(function(o){if(Array.isArray(s.days[o])){s.days[lg[o]]=s.days[o];if(typeof s.titles[o]==='string')s.titles[lg[o]]=s.titles[o];}delete s.days[o];delete s.titles[o];});}s.weekId=s.weekId||'w0';s.updatedAt=+s.updatedAt||0;
   DAYS.forEach(function(x){if(!Array.isArray(s.days[x.k]))s.days[x.k]=d.days[x.k];if(typeof s.titles[x.k]!=='string')s.titles[x.k]=d.titles[x.k];});
@@ -462,7 +472,7 @@ async function flushPlan(){
   if(!SB||!isCoach)return;if(wPlan){qPlan=true;return;}
   wPlan=true;var k=pendKey,pl=plans[k];
   try{
-    if(pl){var x=(k==='geral')?await SB.from('config').upsert({org_id:ORG,plano:pl}):await SB.from('alunos').update({plano:pl}).eq('id',k);if(x&&x.error)throw x.error;}
+    if(pl){var x=(k==='geral')?await SB.from('config').upsert({org_id:ORG,plano:pl}):(k==='geral_f')?await SB.from('config').upsert({org_id:ORG,plano_f:pl}):await SB.from('alunos').update({plano:pl}).eq('id',k);if(x&&x.error)throw x.error;}
     pendPlan=false;
   }catch(e){if(!pendPlan)toast('Sem conexão: a alteração será enviada quando a internet voltar');pendPlan=true;}
   wPlan=false;if(qPlan){qPlan=false;flushPlan();}
@@ -480,7 +490,9 @@ function reconcile(){
   if(prog.updatedAt||prog.nome)saveProg();else{statRecalc();}
   return true;
 }
-function tick(){var a=(document.activeElement||{}).tagName||'';if(/INPUT|TEXTAREA|SELECT/.test(a))return;if(ui.view==='painel'||ui.view==='agenda'||ui.view==='clientes')renderMain();else if(ui.target!=='geral')render();else renderHeader();}
+var stuSig='';
+function stuSig2(){return students.map(function(p){return p.docId+p.nome+p.sexo;}).join('|');}
+function tick(){var a=(document.activeElement||{}).tagName||'';if(/INPUT|TEXTAREA|SELECT/.test(a))return;if(ui.view==='painel'||ui.view==='agenda'||ui.view==='clientes')renderMain();else if(!isModel(ui.target))render();else{renderHeader();var g=stuSig2();if(CM()&&g!==stuSig&&(ui.view==='treino'||ui.view==='semana'))renderMain();stuSig=g;}}
 function startPanel(){}
 function gateShow(h){document.getElementById('app').hidden=true;document.getElementById('gate').hidden=false;document.getElementById('gatebody').innerHTML=h;}
 function gateHide(){document.getElementById('gate').hidden=true;document.getElementById('app').hidden=false;}
@@ -498,19 +510,21 @@ async function enterCoach(u){
   var og=await SB.from('organizacoes').select('nome,status').eq('id',ORG).maybeSingle();
   if(og.data&&(og.data.status==='suspenso'||og.data.status==='cancelado')){gateShow('<h2>Conta suspensa</h2><p>O acesso desta conta está suspenso. Entre em contato com o suporte para regularizar.</p><button type="button" class="btn primary" data-act="logout">Sair</button>');return;}
   isCoach=true;ui.coachOn=true;me.id=u.id;DB=SB;progRef=null;
-  var c=await SB.from('config').select('plano').maybeSingle();
+  var c=await SB.from('config').select('plano,plano_f').maybeSingle();
   if(c.data&&c.data.plano){plan=normPlan(c.data.plano);plans.geral=plan;}
   else{plans.geral=plan;ui.target='geral';savePlan();}
+  plans.geral_f=(c.data&&c.data.plano_f)?normPlan(c.data.plano_f,'f'):normPlan(null,'f');
   try{var sp=await SB.rpc('is_super');SUPER=sp.data===true;}catch(e){}
   gateHide();render();await loadAll();setInterval(loadAll,20000);
 }
 async function loadAll(){
   if(!SB||!isCoach)return;
-  var a=await SB.from('alunos').select('*').order('nome'),c=await SB.from('config').select('plano').maybeSingle();
+  var a=await SB.from('alunos').select('*').order('nome'),c=await SB.from('config').select('plano,plano_f').maybeSingle();
   if(a.error){panelErr=a.error.code||'erro';panelLoaded=true;tick();return;}
   panelErr='';await loadProfs();await loadEventos();if(SUPER)await loadClientes();
-  students=a.data.map(function(r){var p=normProg(r.progresso);p.docId=r.id;p.nome=r.nome;p.token=r.token;p.contato=r.contato||'';return p;});
+  students=a.data.map(function(r){var p=normProg(r.progresso);p.docId=r.id;p.nome=r.nome;p.token=r.token;p.contato=r.contato||'';p.sexo=r.sexo==='f'?'f':'m';return p;});
   var np={};if(c.data&&c.data.plano)np.geral=normPlan(c.data.plano);else if(plans.geral)np.geral=plans.geral;
+  np.geral_f=(c.data&&c.data.plano_f)?normPlan(c.data.plano_f,'f'):(plans.geral_f||normPlan(null,'f'));
   a.data.forEach(function(r){if(r.plano)np[r.id]=normPlan(r.plano);});
   plans=np;
   var cur=plans[ui.target];
@@ -653,7 +667,7 @@ function waLink(p){
 function csvCell(v){v=String(v==null?'':v);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"';}
 async function addStudent(f){
   var fd=new FormData(f),nome=String(fd.get('nome')||'').trim();if(!nome)return;
-  var r=await SB.from('alunos').insert({nome:nome,contato:String(fd.get('contato')||'').trim()}).select().single();
+  var r=await SB.from('alunos').insert({nome:nome,contato:String(fd.get('contato')||'').trim(),sexo:fd.get('sexo')==='f'?'f':'m'}).select().single();
   if(r.error){toast('Não foi possível cadastrar o aluno');return;}
   await loadAll();ui.open=r.data.id;renderMain();toast('Aluno cadastrado. Use “Copiar link do aluno”.');
 }
@@ -661,7 +675,7 @@ async function refreshStudent(){
   if(!TOKEN||!SB||wProg)return;
   try{
     var q=await SB.rpc('aluno_get',{p_token:TOKEN});
-    if(!q.error&&q.data){plan=normPlan(q.data.plano);writeLocal(PK,plan);writeLocal('fj-cache-'+TOKEN,{nome:q.data.nome,plano:q.data.plano});await loadAgendaAluno();reconcile();render();}
+    if(!q.error&&q.data){plan=normPlan(q.data.plano,q.data.sexo);writeLocal(PK,plan);writeLocal('fj-cache-'+TOKEN,{nome:q.data.nome,plano:q.data.plano,sexo:q.data.sexo});await loadAgendaAluno();reconcile();render();}
   }catch(e){}
 }
 async function enterStudent(){
@@ -676,12 +690,12 @@ async function enterStudent(){
       }
     }catch(e){}
   }
-  if(d)writeLocal('fj-cache-'+TOKEN,{nome:d.nome,plano:d.plano});
-  else if(ck){d={nome:ck.nome,plano:ck.plano,progresso:null};off=true;}
+  if(d)writeLocal('fj-cache-'+TOKEN,{nome:d.nome,plano:d.plano,sexo:d.sexo});
+  else if(ck){d={nome:ck.nome,plano:ck.plano,sexo:ck.sexo,progresso:null};off=true;}
   else{gateShow('<h2>Sem conexão</h2><p>Abra o seu link uma vez com internet. Depois disso o app também abre sem sinal.</p>');return;}
   var srv=normProg(d.progresso),loc=normProg(readLocal(GK));
   prog=(off||loc.updatedAt>srv.updatedAt)?loc:srv;prog.nome=d.nome;prog.uid=TOKEN;
-  plan=normPlan(d.plano);writeLocal(PK,plan);planReady=true;
+  plan=normPlan(d.plano,d.sexo);writeLocal(PK,plan);planReady=true;
   progRef={set:function(o){if(!SB)return Promise.reject({code:'offline'});return SB.rpc('aluno_save',{p_token:TOKEN,p_progresso:JSON.parse(o.json)}).then(function(x){if(x.error)throw x.error;});}};
   await loadAgendaAluno();reconcile();gateHide();render();
   if(off){syncState='offline';pendProg=prog.updatedAt>0;setSync();}
@@ -707,8 +721,11 @@ setInterval(retrySync,30000);
 /* ---------- utilidades ---------- */
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
 function dayObj(k){return DAYS.filter(function(d){return d.k===k})[0];}
-function vp(){return (CM()&&ui.target!=='geral')?(students.filter(function(p){return p.docId===ui.target})[0]||normProg(null)):prog;}
-function planOf(id){return plans[id]||plans.geral||plan;}
+function vp(){return (CM()&&!isModel(ui.target))?(students.filter(function(p){return p.docId===ui.target})[0]||normProg(null)):prog;}
+function isModel(t){return t==='geral'||t==='geral_f';}
+function stuOf(id){return students.filter(function(p){return p.docId===id;})[0];}
+function mkey(p){return p&&p.sexo==='f'?'geral_f':'geral';}
+function planOf(id){return plans[id]||plans[mkey(stuOf(id))]||plans.geral||plan;}
 function stOf(id){var p=vp().items[id];return (p&&p.s)||'Pendente';}
 function vi(it){var q=vp(),p=q.items[it.id]||{};return Object.assign({},it,{status:p.s||'Pendente',result:p.r||'',note:p.n||'',sets:p.sets||[],prev:(q.prev||{})[it.ex]||null});}
 function pr(id){return prog.items[id]||(prog.items[id]={});}
@@ -851,11 +868,11 @@ function calc(p){
   return {cur:cur,done:done,total:total,rate:total?Math.round(done/total*100):0,perDay:perDay};
 }
 function audBar(){
-  var o='<option value="geral"'+(ui.target==='geral'?' selected':'')+'>Modelo padrão (todos os alunos)</option>'+students.filter(function(p){return p.docId!==me.id}).map(function(p){return '<option value="'+esc(p.docId)+'"'+(ui.target===p.docId?' selected':'')+'>'+esc(p.nome||'Aluno sem nome')+(plans[p.docId]?' · individual':'')+'</option>'}).join('');
+  var o='<option value="geral"'+(ui.target==='geral'?' selected':'')+'>Modelo masculino (padrão)</option><option value="geral_f"'+(ui.target==='geral_f'?' selected':'')+'>Modelo feminino (padrão)</option>'+students.filter(function(p){return p.docId!==me.id}).map(function(p){return '<option value="'+esc(p.docId)+'"'+(ui.target===p.docId?' selected':'')+'>'+esc(p.nome||'Aluno sem nome')+(p.sexo==='f'?' (fem.)':' (masc.)')+(plans[p.docId]?' · individual':'')+'</option>'}).join('');
   return '<div class="notice" style="margin-bottom:12px"><label style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>Enviando treino para:</b><select class="fld" data-in="aud" style="width:auto;flex:none;max-width:100%">'+o+'</select></label>'+
-   (ui.target==='geral'?'<div style="margin-top:6px">Quem não tem treino individual vê este modelo. Ao escolher um aluno, ele ganha um treino só dele (copiado deste), sem perder o progresso.</div>':'<div style="margin-top:6px">Treino individual: só este aluno vê estas mudanças. <button type="button" class="btn sm" data-act="unplan">Voltar ao modelo padrão</button></div>')+'</div>';
+   (isModel(ui.target)?'<div style="margin-top:6px">Cada aluno vê o modelo do seu perfil (masculino ou feminino), a menos que tenha um treino individual. Ao escolher um aluno, ele ganha um treino só dele (copiado do modelo do perfil dele), sem perder o progresso.</div>':'<div style="margin-top:6px">Treino individual: só este aluno vê estas mudanças. <button type="button" class="btn sm" data-act="unplan">Voltar ao modelo padrão</button></div>')+'</div>';
 }
-var INVITE='<form class="nameform" id="newstu" style="border:1px solid var(--line);border-radius:var(--r);padding:12px"><label>Nome do aluno<input class="fld" name="nome" required maxlength="60"></label><label>Contato (opcional)<input class="fld" name="contato" maxlength="80" placeholder="WhatsApp ou e-mail"></label><button type="submit" class="btn primary">Cadastrar aluno</button></form>';
+var INVITE='<form class="nameform" id="newstu" style="border:1px solid var(--line);border-radius:var(--r);padding:12px"><label>Nome do aluno<input class="fld" name="nome" required maxlength="60"></label><label>Contato (opcional)<input class="fld" name="contato" maxlength="80" placeholder="WhatsApp ou e-mail"></label><label>Perfil do aluno<select class="fld" name="sexo"><option value="m">Masculino</option><option value="f">Feminino</option></select></label><button type="submit" class="btn primary">Cadastrar aluno</button></form>';
 function panelView(){
   var h='<section class="panel" style="display:flex;flex-direction:column;gap:14px"><div class="mh"><h2>Painel de alunos</h2><span class="sub">Progresso da semana de cada aluno cadastrado</span></div>'+INVITE+'<div class="acts" style="margin-top:12px"><button type="button" class="btn" data-act="csv">Baixar planilha (CSV)</button></div>'+profHTML();
   if(!DB)return h+'<div class="empty" style="border:0">O painel precisa da conta conectada. Abra a página logado como professor.</div></section>';
@@ -874,7 +891,7 @@ function panelView(){
   });
   h+='<div>'+rows.map(function(r){
     var p=r.p,c=r.c,open=ui.open===p.docId,mine=p.docId===me.id,pl=planOf(p.docId);
-    var s='<div class="stu"><div class="stu-h"><span class="nm">'+esc(p.nome||'Aluno sem nome')+(mine?' (você)':'')+(plans[p.docId]?' · individual':'')+'</span><span class="bar'+(c.rate===100?' ok':'')+'"><i style="width:'+c.rate+'%"></i></span><span class="nums">'+c.done+'/'+c.total+' · '+c.rate+'%'+(c.cur?'':' · semana anterior')+'</span><span class="nums last">'+ago(p.updatedAt)+'</span><button type="button" class="btn sm go" data-act="pstu" data-id="'+esc(p.docId)+'">'+(open?'Fechar':'Ver detalhes')+'</button></div>';
+    var s='<div class="stu"><div class="stu-h"><span class="nm">'+esc(p.nome||'Aluno sem nome')+(mine?' (você)':'')+(p.sexo==='f'?' · Feminino':' · Masculino')+(plans[p.docId]?' · individual':'')+'</span><span class="bar'+(c.rate===100?' ok':'')+'"><i style="width:'+c.rate+'%"></i></span><span class="nums">'+c.done+'/'+c.total+' · '+c.rate+'%'+(c.cur?'':' · semana anterior')+'</span><span class="nums last">'+ago(p.updatedAt)+'</span><button type="button" class="btn sm go" data-act="pstu" data-id="'+esc(p.docId)+'">'+(open?'Fechar':'Ver detalhes')+'</button></div>';
     if(open){
       s+='<div class="stu-d">'+DAYS.map(function(d){
         var l=pl.days[d.k];if(!l.length)return '';
@@ -882,7 +899,7 @@ function panelView(){
           var x=(c.cur&&p.items[it.id])||{},st=x.s||'Pendente';
           return '<div class="ln"><span class="st-'+st.replace(/\s/g,'')+'">'+STLBL[st]+'</span><span>'+esc(it.name)+(x.r?' <em>· '+esc(x.r)+'</em>':'')+(x.n?'<br><em>Nota: '+esc(x.n)+'</em>':'')+'</span></div>';
         }).join('')+'</div>';
-      }).join('')+'<div class="acts"><button type="button" class="btn sm primary" data-act="ptarget" data-id="'+esc(p.docId)+'">Montar treino deste aluno</button><button type="button" class="btn sm" data-act="plink" data-id="'+esc(p.docId)+'">Copiar link do aluno</button><button type="button" class="btn sm" data-act="pwa" data-id="'+esc(p.docId)+'">Enviar pelo WhatsApp</button><button type="button" class="btn sm" data-act="newlink" data-id="'+esc(p.docId)+'">Gerar novo link</button></div>'+(mine?'':'<div><button type="button" class="btn sm danger" data-act="pdel" data-id="'+esc(p.docId)+'">Remover aluno do painel</button></div>')+'</div>';
+      }).join('')+'<div class="acts"><label style="display:flex;gap:6px;align-items:center;font-size:13px">Perfil<select class="fld" data-in="sexo" data-id="'+esc(p.docId)+'" style="width:auto;padding:6px 8px"><option value="m"'+(p.sexo==='f'?'':' selected')+'>Masculino</option><option value="f"'+(p.sexo==='f'?' selected':'')+'>Feminino</option></select></label><button type="button" class="btn sm primary" data-act="ptarget" data-id="'+esc(p.docId)+'">Montar treino deste aluno</button><button type="button" class="btn sm" data-act="plink" data-id="'+esc(p.docId)+'">Copiar link do aluno</button><button type="button" class="btn sm" data-act="pwa" data-id="'+esc(p.docId)+'">Enviar pelo WhatsApp</button><button type="button" class="btn sm" data-act="newlink" data-id="'+esc(p.docId)+'">Gerar novo link</button></div>'+(mine?'':'<div><button type="button" class="btn sm danger" data-act="pdel" data-id="'+esc(p.docId)+'">Remover aluno do painel</button></div>')+'</div>';
     }
     return s+'</div>';
   }).join('')+'</div></section>';
@@ -1053,9 +1070,17 @@ function addItems(day,exs,mode){
   var items=exs.map(function(e){return mkItem(e)});
   plan.days[day]=mode==='replace'?items:plan.days[day].concat(items);
 }
+function setSexo(id,v){
+  v=v==='f'?'f':'m';var st=stuOf(id);if(!st||!SB)return;
+  SB.from('alunos').update({sexo:v}).eq('id',id).then(function(r){
+    if(r.error){toast('Não foi possível alterar o perfil');renderMain();return;}
+    st.sexo=v;renderMain();
+    toast('Perfil alterado. '+(plans[id]?'Este aluno tem treino individual e ele não muda.':'O aluno passa a ver o modelo '+(v==='f'?'feminino':'masculino')+'.'));
+  });
+}
 function setTarget(k){
   ui.target=k;ui.editing=null;
-  if(k!=='geral'&&!plans[k]){var b=clone(plans.geral||plan);plans[k]=b;plan=b;savePlan();toast('Treino individual criado a partir do modelo padrão');}
+  if(!isModel(k)&&!plans[k]){var b=clone(plans[mkey(stuOf(k))]||plans.geral||plan);plans[k]=b;plan=b;savePlan();toast('Treino individual criado a partir do modelo padrão');}
   else plan=plans[k]||plan;
   render();
 }
@@ -1071,7 +1096,7 @@ var H={
  ptarget:function(t){setTarget(t.dataset.id);ui.view='treino';render();window.scrollTo(0,0);},
  unplan:function(t){
    if(!t.dataset.armed){arm(t,'Confirmar','Voltar ao modelo padrão');return;}
-   var k=ui.target;delete plans[k];ui.target='geral';plan=plans.geral||plan;
+   var k=ui.target,mk=mkey(stuOf(k));delete plans[k];ui.target=mk;plan=plans[mk]||plans.geral||plan;
    if(SB)SB.from('alunos').update({plano:null}).eq('id',k).then(function(){});render();toast('Aluno voltou ao modelo padrão');
  },
  name:function(){openName();},
@@ -1147,12 +1172,12 @@ var H={
    });
  },
  csv:function(){
-   var rows=[['Aluno','Tipo de treino','Dia','Exercício','Série/duração','Status','Cargas (kg x reps)','Resultado','Anotação']];
+   var rows=[['Aluno','Perfil','Tipo de treino','Dia','Exercício','Série/duração','Status','Cargas (kg x reps)','Resultado','Anotação']];
    students.filter(function(x){return x.docId!==me.id;}).forEach(function(p){
      var pl=planOf(p.docId),cur=p.weekId===pl.weekId;
      DAYS.forEach(function(d){(pl.days[d.k]||[]).forEach(function(it){
        var q=(cur&&p.items[it.id])||{};
-       rows.push([p.nome,plans[p.docId]?'Individual':'Modelo',d.n,it.name,it.dose,q.s||'Pendente',(q.sets||[]).filter(function(x){return x&&(x.k||x.r);}).map(function(x){return (x.k||'-')+' x '+(x.r||'-');}).join(' | '),q.r||'',q.n||'']);
+       rows.push([p.nome,p.sexo==='f'?'Feminino':'Masculino',plans[p.docId]?'Individual':'Modelo',d.n,it.name,it.dose,q.s||'Pendente',(q.sets||[]).filter(function(x){return x&&(x.k||x.r);}).map(function(x){return (x.k||'-')+' x '+(x.r||'-');}).join(' | '),q.r||'',q.n||'']);
      });});
    });
    var csv='\ufeff'+rows.map(function(r){return r.map(csvCell).join(';');}).join('\r\n');
@@ -1226,6 +1251,7 @@ document.addEventListener('input',function(e){
 document.addEventListener('change',function(e){
   if(e.target.dataset&&e.target.dataset.in==='libday')ui.lib.day=e.target.value;
   if(e.target.dataset&&e.target.dataset.in==='aud')setTarget(e.target.value);
+  if(e.target.dataset&&e.target.dataset.in==='sexo')setSexo(e.target.dataset.id,e.target.value);
 });
 document.addEventListener('submit',function(e){
   var id=e.target.getAttribute('id');
